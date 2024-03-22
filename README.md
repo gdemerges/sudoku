@@ -9,7 +9,7 @@ L'objectif est de créer un programme qui arrive à résoudre une grille de Sudo
 - Sudoku_creator : programme qui propose une grille 9X9 de sudoku à résoudre avec 3 niveaux de difficultés
 
 ## Exemple de realisation 
-![sudoku](https://github.com/gdemerges/sudoku/assets/157049199/11efc10f-7854-43f2-a5fd-744ae21648a4)
+![sudoku](https://github.com/gdemerges/sudoku/assets/157049199/686c0740-f8b9-4e84-a81f-1b59aaf4046b)
 
 
 
