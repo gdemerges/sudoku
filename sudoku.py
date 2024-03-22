@@ -93,6 +93,8 @@ def find_zero(data):
                 return True
         return False
 
-def solver(data):
-    if not find_zero:
-        pass
+
+def solve_sudoku(data):
+  row, col = find_zero(data)
+  if row == -1:
+    return True
