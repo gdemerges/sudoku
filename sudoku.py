@@ -1,13 +1,14 @@
+# Vérifie si il n'y a pas de doublon pour chaque ligne
 def check_row(list_full):
     doublon_row = False
 
     for ligne in list_full:
         box = set()
         for item in ligne:
-            if item in box:
+            if item in box: # Si un même chiffre revient, alors doublon_row deviendra true
                 doublon_row = True
             else:
-                box.add(item)
+                box.add(item) # Ajoute chaque chiffre dans box, qui ne contiendra que des chiffres uniques (grâce au set())
 
     if doublon_row  :
         return False
@@ -84,3 +85,14 @@ def afficher(data):
         print()
 
 afficher(grille)
+
+def find_zero(data):
+    for i in range(9):
+        for j in range(9):
+            if data[i][j] == 0:
+                return True
+        return False
+
+def solver(data):
+    if not find_zero:
+        pass
