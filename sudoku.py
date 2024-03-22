@@ -1,100 +1,86 @@
-# Vérifie si il n'y a pas de doublon pour chaque ligne
+# Vérifie s'il n'y a pas de doublon pour chaque ligne
 def check_row(list_full):
-    doublon_row = False
-
     for ligne in list_full:
-        box = set()
-        for item in ligne:
-            if item in box: # Si un même chiffre revient, alors doublon_row deviendra true
-                doublon_row = True
-            else:
-                box.add(item) # Ajoute chaque chiffre dans box, qui ne contiendra que des chiffres uniques (grâce au set())
+        if len(ligne) != len(set(ligne)):
+            return False
+    return True
 
-    if doublon_row  :
-        return False
-    else:
-        return True
-
+# Vérifie s'il n'y a pas de doublon pour chaque colonne
 def check_column(list_full):
-    doublon_column = False
-
     for colonne in range(9):
-        box_columns = set()
-        for item in list_full:
-            if item[colonne] in box_columns:
-                doublon_column = True
-            else:
-                box_columns.add(item[colonne])
+        col = [list_full[row][colonne] for row in range(9)]
+        if len(col) != len(set(col)):
+            return False
+    return True
 
-    if doublon_column:
-        return False
-    else:
-        return True
-
+# Vérifie s'il n'y a pas de doublon pour chaque carré
 def check_carre(list_full):
-    list_carre = []
-
-    for ligne_full in range(0, 9, 3):
-        for colonne_full in range(0, 9, 3):
+    for ligne in range(0, 9, 3):
+        for colonne in range(0, 9, 3):
             carre = []
-            for row in range(ligne_full, ligne_full + 3):
-                for col in range(colonne_full, colonne_full + 3):
-                    carre.append(list_full[row][col])
-            list_carre.append(carre)
+            for i in range(3):
+                for j in range(3):
+                    carre.append(list_full[ligne+i][colonne+j])
             if len(carre) != len(set(carre)):
                 return False
     return True
 
-def check_sudoku():
-    if check_column(list_full) and check_carre(list_full) and check_row(list_full) == True:
-        print("Soduku valide")
-    else:
-        print("Soduku non valide")
+# Vérifie si la grille de Sudoku est valide
+def check_sudoku(list_full):
+    return check_column(list_full) and check_carre(list_full) and check_row(list_full)
 
-list_full = [
-    [5, 3, 4, 6, 7, 8, 9, 1, 2],
-    [6, 7, 2, 1, 9, 5, 3, 4, 8],
-    [1, 9, 8, 3, 4, 2, 5, 6, 7],
-    [8, 5, 9, 7, 6, 1, 4, 2, 3],
-    [4, 2, 6, 8, 5, 3, 7, 9, 1],
-    [7, 1, 3, 9, 2, 4, 8, 5, 6],
-    [9, 6, 1, 5, 3, 7, 2, 8, 4],
-    [2, 8, 7, 4, 1, 9, 6, 3, 5],
-    [3, 4, 5, 2, 8, 6, 1, 7, 9]
-]
-
-check_sudoku()
-
-
-grille = [
-    [7,8,0,4,0,0,1,2,0],
-    [6,0,0,0,7,5,0,0,9],
-    [0,0,0,6,0,1,0,7,8],
-    [0,0,7,0,4,0,2,6,0],
-    [0,0,1,0,5,0,9,3,0],
-    [9,0,4,0,6,0,0,0,5],
-    [0,7,0,3,0,0,0,1,2],
-    [1,2,0,0,0,7,4,0,0],
-    [0,4,9,2,0,6,0,0,7]
-]
-
+# Affiche la grille de Sudoku
 def afficher(data):
     for i in range(9):
         for j in range(9):
-            print(data[i][j], end = " ")
+            print(data[i][j], end=" ")
         print()
 
-afficher(grille)
-
+# Trouve la première case vide
 def find_zero(data):
     for i in range(9):
         for j in range(9):
             if data[i][j] == 0:
-                return True
-        return False
+                return i, j
+    return -1, -1
 
+# Vérifie si placer un num dans la position est valide
+def valid_move(data, row, col, num):
+    temp_data = [r[:] for r in data]
+    temp_data[row][col] = num
+    return check_sudoku(temp_data)
 
+# Résout la grille de Sudoku
 def solve_sudoku(data):
-  row, col = find_zero(data)
-  if row == -1:
-    return True
+    row, col = find_zero(data)
+    if row == -1:  # Si aucune case vide n'est trouvée, la grille est résolue
+        return True
+    for num in range(1, 10):
+        if valid_move(data, row, col, num):
+            data[row][col] = num
+            if solve_sudoku(data):
+                return True
+            data[row][col] = 0  # Efface le mouvement s'il ne mène pas à une solution
+    return False
+
+# Grille de Sudoku à résoudre
+grille = [
+    [0, 2, 0, 6, 0, 8, 0, 0, 0],
+    [5, 8, 0, 0, 0, 9, 7, 0, 0],
+    [0, 0, 0, 0, 4, 0, 0, 0, 0],
+    [3, 7, 0, 0, 0, 0, 5, 0, 0],
+    [6, 0, 0, 0, 0, 0, 0, 0, 4],
+    [0, 0, 8, 0, 0, 0, 0, 1, 3],
+    [0, 0, 0, 0, 2, 0, 0, 0, 0],
+    [0, 0, 9, 8, 0, 0, 0, 3, 6],
+    [0, 0, 0, 3, 0, 6, 0, 9, 0]
+]
+
+print("Grille de Sudoku avant résolution:")
+afficher(grille)
+
+if solve_sudoku(grille):
+    print("\nSudoku résolu:")
+    afficher(grille)
+else:
+    print("Pas résolvable.")
