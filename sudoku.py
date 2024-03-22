@@ -1,4 +1,13 @@
-# Vérifie si il n'y a pas de doublon pour chaque ligne
+from dokusan import generators
+
+def convertir_grille_dokusan(grille_str):
+    grille = []
+    lignes = [grille_str[i:i+9] for i in range(0, len(grille_str), 9)]
+    for ligne in lignes:
+        grille.append([int(char) if char != '.' else 0 for char in ligne])  # Remplace '.' par 0 et convertit en int
+    return grille
+
+# Check la ligne
 def check_row(list_full):
     doublon_row = False
 
@@ -15,6 +24,7 @@ def check_row(list_full):
     else:
         return True
 
+#Check la colonne
 def check_column(list_full):
     doublon_column = False
 
@@ -31,6 +41,7 @@ def check_column(list_full):
     else:
         return True
 
+#Check le carré
 def check_carre(list_full):
     list_carre = []
 
@@ -45,54 +56,67 @@ def check_carre(list_full):
                 return False
     return True
 
-def check_sudoku():
-    if check_column(list_full) and check_carre(list_full) and check_row(list_full) == True:
-        print("Soduku valide")
-    else:
-        print("Soduku non valide")
+#Vérifie si la grille du sudoku est valide
+def check_sudoku(list_full):
+    return check_column(list_full) and check_carre(list_full) and check_row(list_full)
 
-list_full = [
-    [5, 3, 4, 6, 7, 8, 9, 1, 2],
-    [6, 7, 2, 1, 9, 5, 3, 4, 8],
-    [1, 9, 8, 3, 4, 2, 5, 6, 7],
-    [8, 5, 9, 7, 6, 1, 4, 2, 3],
-    [4, 2, 6, 8, 5, 3, 7, 9, 1],
-    [7, 1, 3, 9, 2, 4, 8, 5, 6],
-    [9, 6, 1, 5, 3, 7, 2, 8, 4],
-    [2, 8, 7, 4, 1, 9, 6, 3, 5],
-    [3, 4, 5, 2, 8, 6, 1, 7, 9]
-]
-
-check_sudoku()
-
-
-grille = [
-    [7,8,0,4,0,0,1,2,0],
-    [6,0,0,0,7,5,0,0,9],
-    [0,0,0,6,0,1,0,7,8],
-    [0,0,7,0,4,0,2,6,0],
-    [0,0,1,0,5,0,9,3,0],
-    [9,0,4,0,6,0,0,0,5],
-    [0,7,0,3,0,0,0,1,2],
-    [1,2,0,0,0,7,4,0,0],
-    [0,4,9,2,0,6,0,0,7]
-]
-
+#Affiche la grille du sudoku
 def afficher(data):
     for i in range(9):
         for j in range(9):
-            print(data[i][j], end = " ")
+            print(data[i][j], end=" ")
         print()
 
-afficher(grille)
-
+#Trouve le zero sur la grille
 def find_zero(data):
     for i in range(9):
         for j in range(9):
             if data[i][j] == 0:
-                return True
-        return False
+                return i, j
+    return None, None
 
-def solver(data):
-    if not find_zero:
-        pass
+#Check les numéros sur les lignes, colonnes et carrés pour savoir quelle chiffre il peut mettre
+def valid_move(data, row, col, num):
+    # Vérifie la ligne
+    for i in range(9):
+        if data[row][i] == num:
+            return False
+
+    # Vérifie la colonne
+    for i in range(9):
+        if data[i][col] == num:
+            return False
+
+    # Vérifie le carré
+    startRow = row - row % 3
+    startCol = col - col % 3
+    for i in range(3):
+        for j in range(3):
+            if data[i + startRow][j + startCol] == num:
+                return False
+
+    return True
+
+def solve_sudoku(data):
+    row, col = find_zero(data)
+    if row == None:
+        return True
+    for num in range(1, 10):
+        if valid_move(data, row, col, num):
+            data[row][col] = num
+            if solve_sudoku(data):
+                return True
+            data[row][col] = 0
+    return False
+
+grille_str = str(generators.random_sudoku(avg_rank=150))
+grille = convertir_grille_dokusan(grille_str)
+
+print("Grille de Sudoku avant résolution:")
+afficher(grille)
+
+if solve_sudoku(grille):
+    print("\nSudoku résolu:")
+    afficher(grille)
+else:
+    print("Pas résolvable.")
