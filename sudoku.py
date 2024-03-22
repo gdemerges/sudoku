@@ -1,11 +1,9 @@
-# Vérifie s'il n'y a pas de doublon pour chaque ligne
 def check_row(list_full):
     for ligne in list_full:
         if len(ligne) != len(set(ligne)):
             return False
     return True
 
-# Vérifie s'il n'y a pas de doublon pour chaque colonne
 def check_column(list_full):
     for colonne in range(9):
         col = [list_full[row][colonne] for row in range(9)]
@@ -13,7 +11,6 @@ def check_column(list_full):
             return False
     return True
 
-# Vérifie s'il n'y a pas de doublon pour chaque carré
 def check_carre(list_full):
     for ligne in range(0, 9, 3):
         for colonne in range(0, 9, 3):
@@ -25,18 +22,15 @@ def check_carre(list_full):
                 return False
     return True
 
-# Vérifie si la grille de Sudoku est valide
 def check_sudoku(list_full):
     return check_column(list_full) and check_carre(list_full) and check_row(list_full)
 
-# Affiche la grille de Sudoku
 def afficher(data):
     for i in range(9):
         for j in range(9):
             print(data[i][j], end=" ")
         print()
 
-# Trouve la première case vide
 def find_zero(data):
     for i in range(9):
         for j in range(9):
@@ -44,13 +38,27 @@ def find_zero(data):
                 return i, j
     return -1, -1
 
-# Vérifie si placer un num dans la position est valide
 def valid_move(data, row, col, num):
-    temp_data = [r[:] for r in data]
-    temp_data[row][col] = num
-    return check_sudoku(temp_data)
+    # Vérifie la ligne
+    for i in range(9):
+        if data[row][i] == num:
+            return False
 
-# Résout la grille de Sudoku
+    # Vérifie la colonne
+    for i in range(9):
+        if data[i][col] == num:
+            return False
+
+    # Vérifie le carré
+    startRow = row - row % 3
+    startCol = col - col % 3
+    for i in range(3):
+        for j in range(3):
+            if data[i + startRow][j + startCol] == num:
+                return False
+
+    return True
+
 def solve_sudoku(data):
     row, col = find_zero(data)
     if row == -1:  # Si aucune case vide n'est trouvée, la grille est résolue
@@ -63,7 +71,6 @@ def solve_sudoku(data):
             data[row][col] = 0  # Efface le mouvement s'il ne mène pas à une solution
     return False
 
-# Grille de Sudoku à résoudre
 grille = [
     [0, 2, 0, 6, 0, 8, 0, 0, 0],
     [5, 8, 0, 0, 0, 9, 7, 0, 0],
