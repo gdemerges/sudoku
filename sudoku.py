@@ -4,7 +4,7 @@ def convertir_grille_dokusan(grille_str):
     grille = []
     lignes = [grille_str[i:i+9] for i in range(0, len(grille_str), 9)]
     for ligne in lignes:
-        grille.append([int(char) if char != '.' else 0 for char in ligne])  # Remplace '.' par 0 et convertit en int
+        grille.append([int(char) if char != '.' else 0 for char in ligne])
     return grille
 
 # Check la ligne
@@ -109,10 +109,29 @@ def solve_sudoku(data):
             data[row][col] = 0
     return False
 
-grille_str = str(generators.random_sudoku(avg_rank=150))
-grille = convertir_grille_dokusan(grille_str)
+def choice_difficulty():
+    print("Choisissez la difficulté de votre grille de Sudoku:")
+    print("1. Facile")
+    print("2. Moyenne")
+    print("3. Difficile")
 
-print("Grille de Sudoku avant résolution:")
+    choix = input("Entrez le numéro correspondant à votre choix (1, 2 ou 3): ")
+
+    if choix == '1':
+        grille_difficulty = generators.random_sudoku(avg_rank=50)
+    elif choix == '2':
+        grille_difficulty = generators.random_sudoku(avg_rank=150)
+    elif choix == '3':
+        grille_difficulty = generators.random_sudoku(avg_rank=250)
+    else:
+        print("Saisie incorrecte. Veuillez réessayer.")
+        return choice_difficulty()
+    grille = convertir_grille_dokusan(str(grille_difficulty))
+    return grille
+
+grille = choice_difficulty()
+
+print("Sudoku avant résolution:")
 afficher(grille)
 
 if solve_sudoku(grille):
