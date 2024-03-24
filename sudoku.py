@@ -129,13 +129,14 @@ def choice_difficulty():
     grille = convertir_grille_dokusan(str(grille_difficulty))
     return grille
 
-grille = choice_difficulty()
+def main():
+    grille = choice_difficulty()
 
-print("Sudoku avant résolution:")
-afficher(grille)
-
-if solve_sudoku(grille):
-    print("\nSudoku résolu:")
+    print("Sudoku avant résolution:")
     afficher(grille)
-else:
-    print("Pas résolvable.")
+
+    if solve_sudoku(grille):
+        print("\nSudoku résolu:")
+        afficher(grille)
+    else:
+        print("Pas résolvable.")
