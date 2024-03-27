@@ -134,6 +134,11 @@ def choice_difficulty():
     return grille
 
 def main():
+    if check_sudoku(grille):
+        print("La grille de Sudoku est valide.")
+    else:
+        print("La grille de Sudoku n'est pas valide.")
+
     grille = choice_difficulty()
 
     print("Sudoku avant résolution:")
